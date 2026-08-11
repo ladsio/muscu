@@ -92,6 +92,22 @@ nav button.on{color:var(--accent)}
 .field label{display:block;font-size:12.5px;color:var(--muted);margin-bottom:5px}
 .field input{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px;font-family:var(--fm)}
 .field input:focus{outline:none;border-color:var(--accent)}
+.kpi{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.kpi .c{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:13px 14px}
+.kpi .n{font-family:var(--fm);font-size:22px;letter-spacing:-.02em}
+.kpi .l{font-size:11.5px;color:var(--muted);margin-top:2px;line-height:1.3}
+.gbar{display:flex;align-items:center;gap:9px;padding:5px 0}
+.gbar .nm{font-size:13px;width:104px;flex:none;color:var(--muted)}
+.gbar .tk{flex:1;height:8px;background:var(--surface2);border-radius:4px;overflow:hidden}
+.gbar .tk i{display:block;height:100%;background:var(--accent);border-radius:4px}
+.gbar .vl{font-family:var(--fm);font-size:12px;width:24px;text-align:right;color:var(--muted)}
+.wk{display:flex;align-items:flex-end;gap:6px;height:74px}
+.wk div{flex:1;background:var(--surface2);border-radius:4px 4px 0 0;min-height:3px}
+.wk div.f{background:var(--accent)}
+.wklab{display:flex;gap:6px;margin-top:6px}
+.wklab span{flex:1;text-align:center;font-size:10px;color:var(--faint);font-family:var(--fm)}
+select{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:11px;-webkit-appearance:none;margin-bottom:12px}
+select:focus{outline:none;border-color:var(--accent)}
 .empty{text-align:center;padding:34px 18px;color:var(--muted);font-size:14.5px}
 .pill{border:1px solid var(--line);border-radius:9px;padding:7px 12px;font-size:13px;font-weight:600;color:var(--muted);flex:none;background:var(--surface)}
 .pill:active{opacity:.65}
@@ -122,7 +138,8 @@ svg.spark{width:100%;height:64px;display:block;margin-top:6px}
 <nav><div class="inner">
   <button data-tab="home" class="on"><svg viewBox="0 0 24 24"><path d="M4 11l8-6 8 6v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/></svg>Séance</button>
   <button data-tab="hist"><svg viewBox="0 0 24 24"><path d="M12 8v4l3 2"/><circle cx="12" cy="12" r="8.5"/></svg>Historique</button>
-  <button data-tab="mes"><svg viewBox="0 0 24 24"><path d="M4 16l4.5-5 3.5 3.5L20 7"/><path d="M4 20h16"/></svg>Mesures</button>
+  <button data-tab="perf"><svg viewBox="0 0 24 24"><path d="M5 20V11M12 20V4M19 20v-6"/></svg>Progrès</button>
+  <button data-tab="mes"><svg viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="8" rx="2"/><path d="M7.5 8v3M12 8v4M16.5 8v3"/></svg>Mesures</button>
   <button data-tab="set"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 7 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1A1.6 1.6 0 0 0 3 14.1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 7a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1A1.6 1.6 0 0 0 9.9 3H10a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 2.7 1.1l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0 1.1 2.7H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1.3z"/></svg>Réglages</button>
 </div></nav>
 
@@ -130,64 +147,67 @@ svg.spark{width:100%;height:64px;display:block;margin-top:6px}
 
 <script>
 "use strict";
-const VERSION = "1.2";
+const VERSION = "1.6";
 const KEY = "stack.v1";
 
 /* ---------- programme ---------- */
 const PROGRAM = {
   gym: [
     { key:"A", title:"Salle A — Poussée + tirage vertical", ex:[
-      {id:"a1", name:"Presse à cuisses", sets:3, lo:8,  hi:12, inc:5,   w:60},
-      {id:"a2", name:"Leg curl assis", sets:3, lo:10, hi:15, inc:2.5, w:25},
-      {id:"a3", name:"Mollets debout à la machine", sets:3, lo:12, hi:20, inc:5, w:40},
-      {id:"a4", name:"Développé poitrine machine", sets:3, lo:8, hi:12, inc:2.5, w:30},
-      {id:"a5", name:"Tirage vertical poitrine", sets:3, lo:8, hi:12, inc:2.5, w:30},
-      {id:"a6", name:"Élévations latérales machine", sets:2, lo:12, hi:18, inc:2.5, w:15},
-      {id:"a7", name:"Curl biceps machine", sets:2, lo:10, hi:15, inc:2.5, w:15},
-      {id:"a8", name:"Crunch machine", sets:3, lo:12, hi:20, inc:2.5, w:20}
+      {id:"a1", mg:"Cuisses", name:"Presse à cuisses", sets:3, lo:8,  hi:12, inc:5,   w:60},
+      {id:"a2", mg:"Ischios & fessiers", name:"Leg curl assis", sets:3, lo:10, hi:15, inc:2.5, w:25},
+      {id:"a3", mg:"Mollets", name:"Mollets debout à la machine", sets:3, lo:12, hi:20, inc:5, w:40},
+      {id:"a4", mg:"Pectoraux", name:"Développé poitrine machine", sets:3, lo:8, hi:12, inc:2.5, w:30},
+      {id:"a5", mg:"Dos", name:"Tirage vertical poitrine", sets:3, lo:8, hi:12, inc:2.5, w:30},
+      {id:"a6", mg:"Épaules", name:"Élévations latérales machine", sets:2, lo:12, hi:18, inc:2.5, w:15},
+      {id:"a7", mg:"Bras", name:"Curl biceps machine", sets:2, lo:10, hi:15, inc:2.5, w:15},
+      {id:"a8", mg:"Tronc", name:"Crunch machine", sets:3, lo:12, hi:20, inc:2.5, w:20}
     ]},
-    { key:"B", title:"Salle B — Épaules + tirage horizontal", ex:[
-      {id:"b1", name:"Leg extension", sets:3, lo:10, hi:15, inc:2.5, w:30},
-      {id:"b2", name:"Presse à cuisses pieds hauts", sets:3, lo:10, hi:14, inc:5, w:55},
-      {id:"b3", name:"Mollets à la presse", sets:3, lo:12, hi:20, inc:5, w:60},
-      {id:"b4", name:"Développé épaules machine", sets:3, lo:8, hi:12, inc:2.5, w:20},
-      {id:"b5", name:"Rowing assis machine", sets:3, lo:10, hi:14, inc:2.5, w:30},
-      {id:"b6", name:"Pec deck inversé (arrière d'épaule)", sets:3, lo:12, hi:18, inc:2.5, w:20},
-      {id:"b7", name:"Extension triceps à la poulie", sets:2, lo:10, hi:15, inc:2.5, w:20},
-      {id:"b8", name:"Extension lombaire au banc", sets:3, lo:10, hi:15, lv:["Mains sur la poitrine","Mains derrière la tête","Avec un disque sur la poitrine"]}
+    { key:"B", title:"Salle B — Épaules, dos et dips", ex:[
+      {id:"b1", mg:"Cuisses", name:"Leg extension", sets:3, lo:10, hi:15, inc:2.5, w:30},
+      {id:"b2", mg:"Ischios & fessiers", name:"Presse à cuisses pieds hauts", sets:3, lo:10, hi:14, inc:5, w:55},
+      {id:"b3", mg:"Mollets", name:"Mollets à la presse", sets:3, lo:12, hi:20, inc:5, w:60},
+      {id:"b4", mg:"Épaules", name:"Développé épaules machine", sets:3, lo:8, hi:12, inc:2.5, w:20},
+      {id:"b5", mg:"Dos", name:"Rowing assis machine", sets:3, lo:10, hi:14, inc:2.5, w:30},
+      {id:"b6", mg:"Épaules", name:"Pec deck inversé (arrière d'épaule)", sets:3, lo:12, hi:18, inc:2.5, w:20},
+      {id:"b7", mg:"Pectoraux", name:"Dips (barres parallèles ou machine assistée)", sets:3, lo:6, hi:12, lv:["Machine assistée, forte assistance","Machine assistée, assistance légère","Dips négatifs, descente 5 s","Dips complets","Dips avec pause en bas","Dips tempo 3 s"]},
+      {id:"b8", mg:"Tronc", name:"Extension lombaire au banc", sets:3, lo:10, hi:15, lv:["Mains sur la poitrine","Mains derrière la tête","Avec un disque sur la poitrine"]}
     ]},
     { key:"C", title:"Salle C — Mixte", ex:[
-      {id:"c1", name:"Hack squat / presse inclinée", sets:3, lo:8, hi:12, inc:5, w:50},
-      {id:"c2", name:"Leg curl allongé", sets:3, lo:10, hi:15, inc:2.5, w:25},
-      {id:"c3", name:"Abduction des hanches", sets:2, lo:12, hi:20, inc:5, w:30},
-      {id:"c4", name:"Écarté machine (pec deck)", sets:3, lo:10, hi:15, inc:2.5, w:25},
-      {id:"c5", name:"Tirage horizontal prise neutre", sets:3, lo:10, hi:14, inc:2.5, w:30},
-      {id:"c6", name:"Tirage vertical prise serrée", sets:2, lo:8, hi:12, inc:2.5, w:28},
-      {id:"c7", name:"Curl biceps à la poulie", sets:2, lo:10, hi:15, inc:2.5, w:15},
-      {id:"c8", name:"Relevé de jambes suspendu", sets:3, lo:8, hi:15, lv:["Relevé de genoux","Genoux vers la poitrine","Jambes tendues"]}
+      {id:"c1", mg:"Cuisses", name:"Hack squat / presse inclinée", sets:3, lo:8, hi:12, inc:5, w:50},
+      {id:"c2", mg:"Ischios & fessiers", name:"Leg curl allongé", sets:3, lo:10, hi:15, inc:2.5, w:25},
+      {id:"c3", mg:"Ischios & fessiers", name:"Abduction des hanches", sets:2, lo:12, hi:20, inc:5, w:30},
+      {id:"c4", mg:"Pectoraux", name:"Écarté machine (pec deck)", sets:3, lo:10, hi:15, inc:2.5, w:25},
+      {id:"c5", mg:"Dos", name:"Tirage horizontal prise neutre", sets:3, lo:10, hi:14, inc:2.5, w:30},
+      {id:"c6", mg:"Dos", name:"Tractions (assistées si besoin)", sets:3, lo:4, hi:10, lv:["Machine assistée, forte assistance","Machine assistée, assistance légère","Tractions négatives, descente 5 s","Tractions complètes","Tractions tempo 3 s","Tractions prise large"]},
+      {id:"c7", mg:"Bras", name:"Curl biceps à la poulie", sets:2, lo:10, hi:15, inc:2.5, w:15},
+      {id:"c8", mg:"Tronc", name:"Relevé de jambes suspendu", sets:3, lo:8, hi:15, lv:["Relevé de genoux","Genoux vers la poitrine","Jambes tendues"]}
     ]}
   ],
   home: [
-    { key:"M1", title:"Maison 1 — Bas du corps + tirage", ex:[
-      {id:"m1a", name:"Squat", sets:3, lo:10, hi:20, lv:["Au poids du corps","Tempo 3 s à la descente","Bulgare (pied arrière sur chaise)","Bulgare tempo 3 s","Pistol assisté"]},
-      {id:"m1b", name:"Fentes", sets:3, lo:8, hi:15, lv:["Fente arrière","Fente marchée","Fente avec pause en bas","Fente sautée"]},
-      {id:"m1c", name:"Pont fessier", sets:3, lo:10, hi:20, lv:["Deux jambes","Deux jambes tempo 3 s","Une jambe","Une jambe, pieds surélevés"]},
-      {id:"m1d", name:"Mollets debout", sets:3, lo:12, hi:25, lv:["Deux jambes au sol","Deux jambes sur une marche","Une jambe","Une jambe sur une marche"]},
-      {id:"m1e", name:"Tirage sous une table", sets:3, lo:6, hi:15, lv:["Genoux pliés","Jambes tendues","Pieds surélevés","Une main assistée"]}
+    { key:"M1", title:"Maison 1 — Bas du corps + tractions", ex:[
+      {id:"m1a", mg:"Cuisses", name:"Squat", sets:3, lo:10, hi:20, lv:["Au poids du corps","Tempo 3 s à la descente","Bulgare (pied arrière sur chaise)","Bulgare tempo 3 s","Pistol assisté"]},
+      {id:"m1b", mg:"Cuisses", name:"Fentes", sets:3, lo:8, hi:15, lv:["Fente arrière","Fente marchée","Fente avec pause en bas","Fente sautée"]},
+      {id:"m1c", mg:"Ischios & fessiers", name:"Pont fessier", sets:3, lo:10, hi:20, lv:["Deux jambes","Deux jambes tempo 3 s","Une jambe","Une jambe, pieds surélevés"]},
+      {id:"m1d", mg:"Mollets", name:"Mollets debout", sets:3, lo:12, hi:25, lv:["Deux jambes au sol","Deux jambes sur une marche","Une jambe","Une jambe sur une marche"]},
+      {id:"m1e", mg:"Dos", name:"Tractions, paumes vers l'avant", sets:3, lo:4, hi:10, lv:["Suspension bras tendus (5 s = 1 rep)","Tractions négatives, descente 5 s","Tractions assistées, pieds au sol","Tractions complètes","Tractions tempo 3 s à la descente","Tractions prise large"]},
+      {id:"m1f", mg:"Épaules", name:"Extensions dorsales Y-T-W", sets:3, lo:8, hi:15, lv:["Bras en W","Bras en T","Bras en Y","Bras en Y, tempo 2 s en haut"]}
     ]},
     { key:"M2", title:"Maison 2 — Poussée + tronc", ex:[
-      {id:"m2a", name:"Pompes", sets:3, lo:6, hi:15, lv:["Contre un mur","Inclinées sur une table","Sur les genoux","Complètes","Tempo 3 s","Pieds surélevés","Diamant"]},
-      {id:"m2b", name:"Dips sur chaise", sets:3, lo:8, hi:15, lv:["Genoux pliés","Jambes tendues","Pieds surélevés"]},
-      {id:"m2c", name:"Pompes épaules (pike)", sets:3, lo:6, hi:12, lv:["Au sol","Pieds sur une marche","Pieds sur une chaise"]},
-      {id:"m2d", name:"Gainage latéral", sets:3, lo:8, hi:20, lv:["Sur les genoux","Complet","Avec montée de hanche"]},
-      {id:"m2e", name:"Abdominaux", sets:3, lo:10, hi:20, lv:["Crunch","Crunch jambes tendues","Relevé de genoux","Relevé de jambes tendues"]}
+      {id:"m2a", mg:"Pectoraux", name:"Pompes", sets:3, lo:6, hi:15, lv:["Contre un mur","Inclinées sur une table","Sur les genoux","Complètes","Tempo 3 s","Pieds surélevés","Diamant"]},
+      {id:"m2b", mg:"Bras", name:"Dips sur chaise", sets:3, lo:8, hi:15, lv:["Genoux pliés","Jambes tendues","Pieds surélevés"]},
+      {id:"m2c", mg:"Épaules", name:"Pompes épaules (pike)", sets:3, lo:6, hi:12, lv:["Au sol","Pieds sur une marche","Pieds sur une chaise"]},
+      {id:"m2d", mg:"Dos", name:"Tractions, paumes vers soi", sets:3, lo:5, hi:12, lv:["Suspension bras tendus (5 s = 1 rep)","Tractions négatives, descente 5 s","Tractions assistées, pieds au sol","Tractions complètes","Tractions tempo 3 s à la descente","Une main assistée"]},
+      {id:"m2e", mg:"Tronc", name:"Gainage latéral", sets:3, lo:8, hi:20, lv:["Sur les genoux","Complet","Avec montée de hanche"]},
+      {id:"m2f", mg:"Tronc", name:"Relevé de jambes suspendu", sets:3, lo:6, hi:15, lv:["Relevé de genoux","Genoux vers la poitrine","Jambes tendues à 90°","Jambes tendues vers la barre"]}
     ]},
     { key:"M3", title:"Maison 3 — Full body", ex:[
-      {id:"m3a", name:"Squat explosif", sets:3, lo:10, hi:20, lv:["Chaise au mur","Squat au poids du corps","Squat sauté","Squat sauté fractionné"]},
-      {id:"m3b", name:"Pompes larges", sets:3, lo:6, hi:15, lv:["Inclinées","Complètes","Tempo 3 s","Archer"]},
-      {id:"m3c", name:"Tirage sous une table", sets:3, lo:6, hi:15, lv:["Genoux pliés","Jambes tendues","Pieds surélevés","Une main assistée"]},
-      {id:"m3d", name:"Charnière de hanche", sets:3, lo:10, hi:20, lv:["Good morning au poids du corps","Sur une jambe","Sur une jambe, tempo 3 s"]},
-      {id:"m3e", name:"Gainage dynamique", sets:3, lo:8, hi:20, lv:["Planche sur genoux","Planche complète","Planche avec bras alternés","Planche avec montée de genou"]}
+      {id:"m3a", mg:"Cuisses", name:"Squat explosif", sets:3, lo:10, hi:20, lv:["Chaise au mur","Squat au poids du corps","Squat sauté","Squat sauté fractionné"]},
+      {id:"m3b", mg:"Ischios & fessiers", name:"Charnière de hanche", sets:3, lo:10, hi:20, lv:["Good morning au poids du corps","Sur une jambe","Sur une jambe, tempo 3 s"]},
+      {id:"m3c", mg:"Mollets", name:"Mollets debout", sets:3, lo:12, hi:25, lv:["Deux jambes au sol","Deux jambes sur une marche","Une jambe","Une jambe sur une marche"]},
+      {id:"m3d", mg:"Pectoraux", name:"Pompes larges", sets:3, lo:6, hi:15, lv:["Inclinées","Complètes","Tempo 3 s","Archer"]},
+      {id:"m3e", mg:"Dos", name:"Tirage sous une table", sets:3, lo:6, hi:15, lv:["Genoux pliés","Jambes tendues","Pieds surélevés","Une main assistée"]},
+      {id:"m3f", mg:"Tronc", name:"Gainage dynamique", sets:3, lo:8, hi:20, lv:["Planche sur genoux","Planche complète","Planche avec bras alternés","Planche avec montée de genou"]}
     ]}
   ]
 };
@@ -255,6 +275,48 @@ const DEMO = {
     e:"Enroule le buste vers l'avant en rapprochant les côtes du bassin, comme si tu voulais te recroqueviller. Reviens lentement.",
     x:"Tirer avec les bras ou plier au niveau des hanches. Le mouvement vient de l'enroulement du dos, pas d'une flexion du corps entier." }
 };
+
+DEMO.m3e = { fixed:'<rect x="30" y="48" width="110" height="8" rx="3" fill="$M"/><line x1="38" y1="56" x2="38" y2="152" stroke="$M" stroke-width="4"/><line x1="132" y1="56" x2="132" y2="152" stroke="$M" stroke-width="4"/><line x1="8" y1="153" x2="212" y2="153" stroke="$M" stroke-width="3"/>',
+  A:{hip:[118,134],knee:[152,140],ankle:[186,146],sh:[76,128],elb:[78,96],hand:[86,62],head:[62,124]},
+  B:{hip:[118,116],knee:[152,128],ankle:[186,146],sh:[76,106],elb:[58,88],hand:[86,62],head:[62,102]},
+  r:"Une table solide, un bureau ou deux chaises avec un manche à balai. Glisse-toi dessous, saisis le bord, bras tendus, talons au sol.",
+  e:"Garde le corps parfaitement aligné des épaules aux talons et tire la poitrine vers le bord de la table. Plus tes pieds sont loin, plus c'est dur.",
+  x:"Laisser le bassin s'affaisser. Contracte les fessiers pendant toute la série pour rester en planche." };
+
+DEMO.m1e = { fixed:'<rect x="48" y="24" width="124" height="7" rx="3" fill="$M"/><rect x="46" y="8" width="8" height="18" rx="2" fill="$M"/><rect x="166" y="8" width="8" height="18" rx="2" fill="$M"/>',
+  A:{hip:[110,120],knee:[102,146],ankle:[106,166],knee2:[118,146],ankle2:[114,166],sh:[110,80],elb:[96,56],hand:[88,30],elb2:[124,56],hand2:[132,30],head:[110,64]},
+  B:{hip:[110,94],knee:[102,120],ankle:[106,140],knee2:[118,120],ankle2:[114,140],sh:[110,54],elb:[80,52],hand:[88,30],elb2:[140,52],hand2:[132,30],head:[110,40]},
+  r:"Vu de face. Prise un peu plus large que les épaules, paumes tournées vers l'avant. Pars bras tendus, épaules relâchées vers le haut.",
+  e:"Commence par abaisser les épaules, puis tire jusqu'à passer le menton au-dessus de la barre. Redescends lentement jusqu'aux bras complètement tendus.",
+  x:"Écourter la descente et enchaîner à moitié. Une traction complète tenue proprement vaut mieux que trois traînées à moitié." };
+
+DEMO.m2d = Object.assign({}, DEMO.m1e, {
+  r:"Même barre, mais paumes tournées vers toi et mains à largeur d'épaules. Cette prise rend l'exercice plus facile et met le biceps au travail.",
+  e:"Tire en gardant les coudes serrés le long du corps. Monte jusqu'à ce que la poitrine approche la barre, redescends bras tendus.",
+  x:"Se contenter d'une prise trop large, qui annule l'avantage de la supination sur le biceps." });
+
+DEMO.c6 = DEMO.m1e;
+
+DEMO.b7 = { fixed:'<rect x="128" y="98" width="68" height="6" rx="3" fill="$M"/><line x1="188" y1="104" x2="188" y2="160" stroke="$M" stroke-width="4"/><line x1="8" y1="161" x2="212" y2="161" stroke="$M" stroke-width="3"/>',
+  A:{hip:[118,100],knee:[136,120],ankle:[130,142],sh:[126,64],elb:[130,82],hand:[134,100],head:[120,48]},
+  B:{hip:[118,112],knee:[136,132],ankle:[130,154],sh:[126,76],elb:[148,86],hand:[134,100],head:[120,60]},
+  r:"Aux barres parallèles ou à la machine assistée. Bras tendus, épaules basses, buste très légèrement penché en avant, genoux fléchis derrière toi.",
+  e:"Descends jusqu'à ce que les bras forment un angle droit, coudes proches du corps, puis remonte sans verrouiller. Un buste plus penché sollicite davantage la poitrine, un buste vertical davantage les triceps.",
+  x:"Descendre trop bas en laissant les épaules remonter vers les oreilles. C'est la position qui abîme l'épaule à la longue : arrête-toi à l'angle droit." };
+
+DEMO.m1f = { fixed:'<line x1="8" y1="147" x2="212" y2="147" stroke="$M" stroke-width="3"/>',
+  A:{hip:[128,132],knee:[160,136],ankle:[190,140],sh:[68,124],elb:[56,136],hand:[40,142],head:[46,120]},
+  B:{hip:[128,132],knee:[160,136],ankle:[190,140],sh:[70,106],elb:[54,110],hand:[36,104],head:[46,96]},
+  r:"Allongé sur le ventre au sol, front vers le tapis, bras devant toi. La lettre correspond à la position des bras vus de dessus.",
+  e:"Décolle la poitrine et les bras du sol en serrant les omoplates, tiens une seconde en haut, redescends lentement. Le regard reste vers le sol.",
+  x:"Casser la nuque en regardant devant soi. La tête suit la ligne du dos, elle ne se relève pas." };
+
+DEMO.m3b = { fixed:'<line x1="8" y1="155" x2="212" y2="155" stroke="$M" stroke-width="3"/>',
+  A:{hip:[110,96],knee:[110,122],ankle:[110,150],sh:[110,56],elb:[92,58],hand:[106,44],head:[110,40]},
+  B:{hip:[110,96],knee:[112,122],ankle:[112,150],sh:[70,88],elb:[62,72],hand:[76,64],head:[54,84]},
+  r:"Debout, pieds largeur de hanches, mains derrière la tête ou croisées sur la poitrine. Genoux très légèrement fléchis et figés.",
+  e:"Pousse les hanches vers l'arrière comme pour fermer une porte avec les fesses, dos parfaitement plat, jusqu'à sentir l'étirement à l'arrière des cuisses. Remonte en serrant les fessiers.",
+  x:"Arrondir le bas du dos, ou plier les genoux pour descendre plus bas. Ce n'est pas un squat : ce sont les hanches qui reculent, pas les genoux qui avancent." };
 
 function ptsOf(p, keys){ return keys.map(k => p[k][0] + "," + p[k][1]).join(" "); }
 function animOn(){ return !(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches); }
@@ -421,6 +483,7 @@ function render(){
     '<div class="wrap">' +
       '<div class="view' + (tab==="home"?" on":"") + '" id="v-home">' + viewHome() + '</div>' +
       '<div class="view' + (tab==="hist"?" on":"") + '" id="v-hist">' + viewHist() + '</div>' +
+      '<div class="view' + (tab==="perf"?" on":"") + '" id="v-perf">' + viewPerf() + '</div>' +
       '<div class="view' + (tab==="mes"?" on":"") + '" id="v-mes">' + viewMes() + '</div>' +
       '<div class="view' + (tab==="set"?" on":"") + '" id="v-set">' + viewSet() + '</div>' +
       '<div class="ver">version ' + VERSION + '</div>' +
@@ -525,6 +588,106 @@ function viewSet(){
     '<h2>Zone sensible</h2><div class="card">' +
     '<button class="btn danger" id="reset">Effacer toutes les données</button>' +
     '<div class="note" style="margin-top:11px">Irréversible. Exporte avant si tu tiens à ton historique.</div></div>';
+}
+
+/* ---------- progrès ---------- */
+const GROUPS = ["Cuisses","Ischios & fessiers","Mollets","Pectoraux","Dos","Épaules","Bras","Tronc"];
+const volOf = s => s.entries.reduce((a,e) => a + e.sets.reduce((b,x) => b + (x.reps||0)*(x.w||0), 0), 0);
+const repsOf = s => s.entries.reduce((a,e) => a + e.sets.reduce((b,x) => b + (x.reps||0), 0), 0);
+const setsOf = s => s.entries.reduce((a,e) => a + e.sets.length, 0);
+const since = d => S.sessions.filter(s => Date.now() - new Date(s.date) < d*864e5);
+
+function line(vals, unit){
+  if(vals.length < 2) return '<div class="empty small">Il faut au moins deux séances pour tracer une courbe.</div>';
+  const mn = Math.min(...vals), mx = Math.max(...vals), rg = (mx - mn) || 1;
+  const px = vals.map((v,i) => ({x:(i/(vals.length-1))*100, y:58 - ((v-mn)/rg)*50}));
+  const pts = px.map(p => p.x.toFixed(1) + "," + p.y.toFixed(1)).join(" ");
+  const dots = px.map(p => '<circle cx="' + p.x.toFixed(1) + '" cy="' + p.y.toFixed(1) + '" r="1.6" fill="#F2B03C" vector-effect="non-scaling-stroke"/>').join("");
+  return '<div class="row small muted" style="margin-bottom:2px"><span class="mono">' + Math.round(mx) + ' ' + unit + '</span>' +
+    '<span class="mono">' + Math.round(vals[vals.length-1]) + ' ' + unit + ' · dernière</span></div>' +
+    '<svg class="spark" viewBox="0 0 100 64" preserveAspectRatio="none">' +
+    '<polyline points="' + pts + '" fill="none" stroke="#F2B03C" stroke-width="1.6" vector-effect="non-scaling-stroke" stroke-linejoin="round" stroke-linecap="round"/>' +
+    dots + '</svg><div class="tiny faint mono">' + Math.round(mn) + ' ' + unit + ' au plus bas</div>';
+}
+
+function viewPerf(){
+  if(S.sessions.length < 1) return '<div class="empty">Rien à mesurer pour l\'instant.<br>Les courbes arrivent dès la première séance terminée.</div>';
+
+  const gym = S.sessions.filter(s => s.type === "gym"), home = S.sessions.filter(s => s.type === "home");
+  const volTot = S.sessions.reduce((a,s) => a + volOf(s), 0);
+  const s30 = since(30).length, sets7 = since(7).reduce((a,s) => a + setsOf(s), 0);
+  let hausse = 0;
+  for(const id in S.ex){
+    const d = defOf(id); if(!d) continue;
+    if(d.lv ? (S.ex[id].lvl||0) > 0 : S.ex[id].w > d.w) hausse++;
+  }
+  const volLab = volTot >= 1000 ? (Math.round(volTot/100)/10).toString().replace(".",",") + " t" : Math.round(volTot) + " kg";
+
+  let s = '<h2>En chiffres</h2><div class="kpi">' +
+    '<div class="c"><div class="n">' + s30 + '</div><div class="l">séances sur 30 jours</div></div>' +
+    '<div class="c"><div class="n">' + volLab + '</div><div class="l">soulevés depuis le début</div></div>' +
+    '<div class="c"><div class="n">' + sets7 + '</div><div class="l">séries cette semaine</div></div>' +
+    '<div class="c"><div class="n">' + hausse + '</div><div class="l">exercices en progression</div></div></div>';
+
+  // équilibre musculaire sur 28 jours
+  const per = {}; GROUPS.forEach(g => per[g] = 0);
+  since(28).forEach(ss => ss.entries.forEach(e => {
+    const d = defOf(e.id); if(d && per[d.mg] !== undefined) per[d.mg] += e.sets.length;
+  }));
+  const mxg = Math.max(1, ...Object.values(per));
+  s += '<h2>Équilibre musculaire</h2><div class="card">' +
+    GROUPS.map(g => '<div class="gbar"><span class="nm">' + g + '</span><span class="tk"><i style="width:' +
+      Math.round(per[g]/mxg*100) + '%"></i></span><span class="vl">' + per[g] + '</span></div>').join("") +
+    '<div class="note" style="margin-top:10px">Séries réalisées par groupe sur 28 jours. Un groupe nettement plus court que les autres finira par se voir.</div></div>';
+
+  // volume
+  s += '<h2>Charge soulevée en salle</h2><div class="card">' +
+    (gym.length ? line(gym.slice(-12).map(volOf), "kg") : '<div class="empty small">Aucune séance salle.</div>') +
+    '<div class="note" style="margin-top:8px">Répétitions × charge, cumulées sur la séance. C\'est l\'indicateur qui suit le mieux la prise de muscle.</div></div>';
+
+  if(home.length) s += '<h2>Répétitions à la maison</h2><div class="card">' +
+    line(home.slice(-12).map(repsOf), "reps") +
+    '<div class="note" style="margin-top:8px">Au poids du corps la charge ne bouge pas : c\'est le total de répétitions qui traduit la progression.</div></div>';
+
+  // assiduité
+  const wk = [], now = new Date(); now.setHours(0,0,0,0);
+  const monday = new Date(now); monday.setDate(now.getDate() - ((now.getDay()+6)%7));
+  for(let i=7;i>=0;i--){
+    const a = new Date(monday); a.setDate(monday.getDate() - i*7);
+    const b = new Date(a); b.setDate(a.getDate() + 7);
+    wk.push({n:S.sessions.filter(x => { const t = new Date(x.date); return t >= a && t < b; }).length,
+             l:a.getDate() + "/" + (a.getMonth()+1)});
+  }
+  const mw = Math.max(1, ...wk.map(x => x.n));
+  s += '<h2>Assiduité</h2><div class="card"><div class="wk">' +
+    wk.map(x => '<div class="' + (x.n?"f":"") + '" style="height:' + Math.round(x.n/mw*100) + '%"></div>').join("") +
+    '</div><div class="wklab">' + wk.map(x => '<span>' + x.l + '</span>').join("") + '</div>' +
+    '<div class="note" style="margin-top:10px">Séances par semaine sur deux mois. La régularité pèse plus lourd que l\'intensité d\'une séance isolée.</div></div>';
+
+  // par exercice
+  const ids = [...new Set(S.sessions.flatMap(x => x.entries.map(e => e.id)))].filter(id => defOf(id));
+  if(ids.length){
+    s += '<h2>Par exercice</h2><div class="card"><select id="perf-ex">' +
+      ids.map(id => '<option value="' + id + '"' + (id===perfEx?" selected":"") + '>' + esc(defOf(id).name) + '</option>').join("") +
+      '</select><div id="perf-ex-c">' + exChart(perfEx || ids[0]) + '</div></div>';
+  }
+  return s;
+}
+
+let perfEx = null;
+function exChart(id){
+  const d = defOf(id); if(!d) return "";
+  const hist = S.sessions.filter(x => x.entries.some(e => e.id === id)).map(x => {
+    const e = x.entries.find(y => y.id === id);
+    return d.lv ? Math.max(...e.sets.map(z => z.reps||0)) : Math.max(...e.sets.map(z => z.w||0));
+  });
+  const st = stOf(id);
+  const now = d.lv ? esc(d.lv[st.lvl]) : fmtW(st.w) + " kg";
+  return '<div class="row small" style="margin-bottom:8px"><span class="muted">Actuellement</span><span class="mono">' + now + '</span></div>' +
+    line(hist, d.lv ? "reps" : "kg") +
+    '<div class="note" style="margin-top:8px">' + (d.lv
+      ? "Au poids du corps, la courbe suit les répétitions. Chaque passage à une variante plus dure la fait repartir plus bas — c\'est normal, et c\'est un progrès."
+      : "Charge la plus lourde utilisée à chaque séance.") + '</div>';
 }
 
 /* ---------- séance ---------- */
@@ -686,6 +849,9 @@ function doImport(file){
 function bindMain(){
   document.querySelectorAll("[data-start]").forEach(b => b.onclick = () => startSession(b.dataset.start));
   document.querySelectorAll("[data-demo]").forEach(b => b.onclick = () => openDemo(b.dataset.demo));
+
+  const pe = document.getElementById("perf-ex");
+  if(pe) pe.onchange = () => { perfEx = pe.value; document.getElementById("perf-ex-c").innerHTML = exChart(pe.value); };
 
   const ms = document.getElementById("m-save");
   if(ms) ms.onclick = () => {
